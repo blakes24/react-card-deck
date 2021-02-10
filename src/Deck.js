@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import Card from './Card';
 import axios from 'axios';
+import './Deck.css';
+import { addTransform } from './helpers';
+import cardBack from './card-back.jpg';
 
 const Deck = () => {
 	const [ deck, setDeck ] = useState(null);
@@ -26,6 +29,8 @@ const Deck = () => {
 						setDrawing(false);
 						throw new Error('no cards remaining!');
 					}
+					newCard['transform'] = addTransform();
+
 					setCards((cards) => [ ...cards, newCard ]);
 				} catch (e) {
 					if (e.message === 'no cards remaining!') {
@@ -45,22 +50,34 @@ const Deck = () => {
 		[ drawing, setDrawing, deck ]
 	);
 
-	const startDrawing = () => {
-		setDrawing(true);
+	const toggleDrawing = () => {
+		setDrawing(!drawing);
 	};
 
-	const stopDrawing = () => {
-		clearInterval(intervalId.current);
+	async function shuffle() {
 		setDrawing(false);
-	};
+		await axios.get(`https://deckofcardsapi.com/api/deck/${deck}/shuffle/`);
+		setCards(() => []);
+	}
 
 	return (
 		<div className="Deck">
-			<button onClick={startDrawing}>Start Drawing</button>
-			<button onClick={stopDrawing}>Stop Drawing</button>
+			<button onClick={toggleDrawing}>{drawing ? 'Stop Drawing' : 'Start Drawing'}</button>
 			<div className="Deck-cards">
-				{cards.map((card) => <Card key={card.code} src={card.image} alt={`${card.value} of ${card.suit}`} />)}
+				{cards.length === 0 ? (
+					<img src={cardBack} />
+				) : (
+					cards.map((card) => (
+						<Card
+							key={card.code}
+							src={card.image}
+							alt={`${card.value} of ${card.suit}`}
+							transform={card.transform}
+						/>
+					))
+				)}
 			</div>
+			<button onClick={shuffle}>Shuffle</button>
 		</div>
 	);
 };

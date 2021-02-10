@@ -1,0 +1,27 @@
+.Deck {
+	margin: 1rem;
+}
+
+.Deck > button {
+	margin: 0 0.5rem;
+	background-color: rgb(253, 250, 218);
+	padding: 6px;
+	border: none;
+	border-radius: 4px;
+}
+
+.Deck > button:hover {
+	background-color: rgb(255, 246, 166);
+}
+
+.Deck-cards {
+	position: relative;
+	height: 350px;
+	margin: 2rem;
+}
+.Deck-cards > img {
+	width: 200px;
+	border: 10px solid white;
+	border-radius: 15px;
+	margin-top: 1rem;
+}
